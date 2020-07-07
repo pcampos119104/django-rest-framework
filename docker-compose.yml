@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+    app:
+        build: .
+        container_name: drf-app
+        command: python manage.py runserver 0.0.0.0:8000
+        restart: always
+        volumes:
+            - .:/home/django/app
+        ports:
+            - "8000:8000"
+        depends_on:
+            - db
+        env_file:
+          - ./.env.dev
+
+    db:
+        image: postgres
+        container_name: drf-db
+        tty: true
+        environment:
+            - POSTGRES_DB=drf_db
+            - POSTGRES_USER=drfuser
+            - POSTGRES_PASSWORD=etWejkaKv5w7LbQn
+        volumes:
+            - drf-pgdata:/var/lib/postgres/data
+
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: drf-pgadmin
+        tty: true
+        environment:
+          - PGADMIN_DEFAULT_EMAIL=admin@user.com
+          - PGADMIN_DEFAULT_PASSWORD=123456
+        ports:
+        - "9000:80"
+
+volumes:
+    drf-pgdata:
+        external: true
+
